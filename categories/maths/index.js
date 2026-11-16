@@ -1,3 +1,5 @@
+import geometry from './geometry/index.js';
+import percentages from './percentages/index.js';
 import algebra from './algebra/index.js';
 import fractions from './fractions/index.js';
 
@@ -7,5 +9,5 @@ export default {
   icon: '÷',
   theme: 'maths',
   description: 'Useful mathematical tools for calculations and problem-solving.',
-  groups: [fractions, algebra]
+  groups: [fractions, percentages, algebra, geometry]
 };

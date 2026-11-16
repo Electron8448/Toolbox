@@ -1,8 +1,8 @@
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { categories, tools } from './categories/index.js';
+import { categories, groups, tools } from './categories/index.js';
 
-const pages = new Set(['/', '/search', ...categories.map(category => category.path), ...tools.map(tool => tool.path)]);
+const pages = new Set(['/', '/search', ...categories.map(category => category.path), ...groups.map(group => group.path), ...tools.map(tool => tool.path)]);
 const modules = [
   'app.js',
   'categories/index.js',
@@ -17,7 +17,17 @@ const modules = [
   'categories/maths/algebra/graphing-calculator/expression.js',
   'categories/maths/algebra/beginner-graph-maker/index.js',
   'categories/maths/algebra/beginner-graph-maker/page.js',
-  'categories/writing/index.js'
+  'tool-page.js',
+  'categories/tool-fields.js',
+  'categories/maths/fractions/tools.js',
+  'categories/maths/percentages/index.js',
+  'categories/maths/algebra/tools.js',
+  'categories/maths/geometry/index.js',
+  'categories/writing/index.js',
+  'categories/writing/grammar-spelling/index.js',
+  'categories/writing/text-tools/index.js',
+  'categories/writing/writing-helpers/index.js',
+  'categories/writing/formatting/index.js'
 ];
 const assets = new Map(modules.map(file => ['/' + file, [file, 'text/javascript']]));
 assets.set('/styles.css', ['styles.css', 'text/css']);

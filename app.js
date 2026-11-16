@@ -1,9 +1,10 @@
+import { standardPage, bindStandard } from './tool-page.js';
 import beginnerGraphMaker from './categories/maths/algebra/beginner-graph-maker/index.js';
 import { makerPage, bindMaker } from './categories/maths/algebra/beginner-graph-maker/page.js';
 import fractionSimplifier from './categories/maths/fractions/fraction-simplifier/index.js';
 import graphingCalculator from './categories/maths/algebra/graphing-calculator/index.js';
 import { graphPage, bindGraph } from './categories/maths/algebra/graphing-calculator/page.js';
-import { categories, tools } from './categories/index.js';
+import { categories, groups, tools } from './categories/index.js';
 import { fractionPage, bindFraction } from './categories/maths/fractions/fraction-simplifier/page.js';
 
 const toolPages = new Map([
@@ -15,6 +16,7 @@ const toolPages = new Map([
 const main = document.querySelector('main');
 const sidebar = document.querySelector('#sidebar');
 const menu = document.querySelector('#menu');
+const toolboxMark = document.querySelector('.toolbox-mark').outerHTML;
 const arrow = '<span class="arrow" aria-hidden="true">↗</span>';
 
 function badge(category) {
@@ -38,7 +40,7 @@ function breadcrumbs(...items) {
 
 function toolCard(tool) {
   return `<a class="tool-card" href="${tool.path}" data-route>
-    <span class="tool-icon" aria-hidden="true"><b>${tool.icon ?? '½'}</b></span>
+    <span class="tool-icon" aria-hidden="true"><b>${tool.icon ?? tool.category.icon}</b></span>
     <span><strong>${tool.name}</strong><small>${tool.category.name} · ${tool.group.name}</small></span>${arrow}
   </a>`;
 }
@@ -46,7 +48,6 @@ function toolCard(tool) {
 function homePage() {
   return `<section class="hero">
     <div class="hero-copy">
-      <span class="logo hero-logo" aria-hidden="true"><i></i></span>
       <h1>Everything you need, <em>all in one toolbox.</em></h1>
       <p>Find useful online tools for maths and writing, all in one place.</p>
     </div>
@@ -54,9 +55,7 @@ function homePage() {
       <div class="art-grid"></div>
       <div class="art-orbit"></div>
       <span class="spark spark-one">✦</span><span class="spark spark-two">✧</span>
-      <span class="art-tile tile-maths">÷</span>
-      <span class="art-tile tile-logo"><span class="logo"><i></i></span></span>
-      <span class="art-tile tile-writing">Aa</span>
+      <div class="hero-brand">${toolboxMark}</div>
     </div>
   </section>
   <section class="workspace panel" aria-labelledby="workspace-title">
@@ -77,10 +76,16 @@ function emptyState(icon, title, description) {
 function categoryPage(category) {
   return `${breadcrumbs(category.name)}
     <header class="page-heading">${badge(category)}<h1>${category.name}</h1><p>${category.description}</p></header>
-    ${category.groups.length ? category.groups.map(group => `<section class="tool-group">
-      <h2>${group.name}</h2>
+    ${groups.filter(group => group.category === category).map(group => `<section class="tool-group">
+      <h2><a href="${group.path}" data-route>${group.name}</a></h2>
       ${tools.filter(tool => tool.group === group).map(toolCard).join('')}
-    </section>`).join('') : emptyState('Aa', 'No writing tools yet', 'Writing tools will appear here when they’re available.')}`;
+    </section>`).join('')}`;
+}
+
+function groupPage(group) {
+  return `${breadcrumbs(group.category, group.name)}
+    <header class="page-heading">${badge(group.category)}<h1>${group.name}</h1></header>
+    <section class="tool-group" aria-label="Tools">${tools.filter(tool => tool.group === group).map(toolCard).join('')}</section>`;
 }
 
 function searchPage() {
@@ -118,18 +123,19 @@ function bindSearch() {
 function render() {
   const path = location.pathname.replace(/\/$/, '') || '/';
   const category = categories.find(item => item.path === path);
+  const group = groups.find(item => item.path === path);
   const tool = tools.find(item => item.path === path);
-  const toolPage = toolPages.get(path);
+  const toolPage = toolPages.get(path) ?? (tool?.run ? { page: standardPage, bind: bindStandard } : null);
   main.className = path === '/' ? 'shell home' : 'shell inner';
   main.innerHTML = category ? categoryPage(category) : toolPage ? toolPage.page(tool, breadcrumbs)
-    : path === '/search' ? searchPage() : homePage();
-  document.title = path === '/' ? 'Toolbox' : `${category?.name ?? tool?.name ?? 'Search'} | Toolbox`;
+    : group ? groupPage(group) : path === '/search' ? searchPage() : homePage();
+  document.title = path === '/' ? 'Toolbox' : `${category?.name ?? group?.name ?? tool?.name ?? 'Search'} | Toolbox`;
   sidebar.querySelectorAll('nav a').forEach(link => {
-    const currentPath = tool?.category.path ?? path;
+    const currentPath = tool?.category.path ?? group?.category.path ?? path;
     if (link.pathname === currentPath) link.setAttribute('aria-current', link.pathname === path ? 'page' : 'location');
     else link.removeAttribute('aria-current');
   });
-  toolPage?.bind();
+  toolPage?.bind(tool);
   if (path === '/search') bindSearch();
 }
 
