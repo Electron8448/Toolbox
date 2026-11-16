@@ -17,17 +17,24 @@ const main = document.querySelector('main');
 const sidebar = document.querySelector('#sidebar');
 const menu = document.querySelector('#menu');
 const toolboxMark = document.querySelector('.toolbox-mark').outerHTML;
+document.querySelector('#nav-categories').innerHTML = categories.map(category => `
+  <details data-category="${category.path}">
+    <summary>${category.name}</summary>
+    <a href="${category.path}" data-route>All ${category.name}</a>
+    ${groups.filter(group=>group.category===category).map(group=>`<a href="${group.path}" data-route>${group.name}</a>`).join('')}
+  </details>`).join('');
 const arrow = '<span class="arrow" aria-hidden="true">↗</span>';
 
 function badge(category) {
   return `<span class="category-icon ${category.theme}" aria-hidden="true">${category.icon}</span>`;
 }
 
-function searchForm() {
+function searchForm(home = false) {
   return `<form class="search-box" role="search" action="/search">
     <span class="magnifier" aria-hidden="true"></span>
     <label class="sr-only" for="query">Search tools</label>
     <input id="query" name="q" type="search" placeholder="Search for a tool…" autocomplete="off">
+    ${home ? '<button class="primary" type="submit">Search</button>' : ''}
   </form>`;
 }
 
@@ -45,11 +52,28 @@ function toolCard(tool) {
   </a>`;
 }
 
+function discoveryCard(item) {
+  const category=item.category??item;
+  return `<a class="tool-card" data-route href="${item.path}">${badge(category)}
+    <span><strong>${item.name}</strong><small>${item.category?category.name:item.description}</small></span>${arrow}</a>`;
+}
+
+const popular = ['/maths/fractions/fraction-simplifier','/writing/text-tools/word-counter','/developer-tools/json/json-formatter','/web-seo-tools/website/qr-code-generator'];
+function recentPaths() {
+  try { const paths=JSON.parse(localStorage.getItem('toolbox:recent')??'[]');return Array.isArray(paths)?paths:[]; }
+  catch {return [];}
+}
+function showTools(title,paths) {
+  const selected=paths.map(path=>tools.find(tool=>tool.path===path)).filter(Boolean);
+  return selected.length?`<section class="home-collection"><h2>${title}</h2><div class="discovery-grid">${selected.map(toolCard).join('')}</div></section>`:'';
+}
+
 function homePage() {
   return `<section class="hero">
     <div class="hero-copy">
       <h1>Everything you need, <em>all in one toolbox.</em></h1>
-      <p>Find useful online tools for maths and writing, all in one place.</p>
+      <p>Find a calculator, converter or writing tool in one place.</p>
+      <div class="home-search">${searchForm(true)}</div>
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="art-grid"></div>
@@ -58,6 +82,9 @@ function homePage() {
       <div class="hero-brand">${toolboxMark}</div>
     </div>
   </section>
+  <section class="home-collection"><h2>Browse categories</h2><div class="discovery-grid">${categories.map(discoveryCard).join('')}</div></section>
+  ${showTools('Popular tools',popular)}
+  ${showTools('Recently used',recentPaths())}
   <section class="workspace panel" aria-labelledby="workspace-title">
     <h2 id="workspace-title">Toolbox workspace</h2>
     <p>Have an idea for a tool we should add? Submit it as a bug report on GitHub.</p>
@@ -90,7 +117,7 @@ function groupPage(group) {
 
 function searchPage() {
   return `${breadcrumbs('Search')}<header class="page-heading"><h1>Search tools</h1>
-    <p>Find tools by name across all Toolbox categories.</p></header>
+    <p>Find tools, categories and subcategories by name.</p></header>
     ${searchForm()}
     <p class="sr-only" id="search-status" role="status"></p>
     <section class="search-results" aria-label="Search results"></section>`;
@@ -103,11 +130,11 @@ function bindSearch() {
   input.value = new URLSearchParams(location.search).get('q') ?? '';
   function update() {
     const term = input.value.trim().toLowerCase();
-    const matches = tools.filter(tool => tool.name.toLowerCase().includes(term));
-    status.textContent = term ? `${matches.length} matching ${matches.length === 1 ? 'tool' : 'tools'}` : '';
+    const matches = [...tools, ...categories, ...groups].filter(item => item.name.toLowerCase().includes(term));
+    status.textContent = term ? `${matches.length} matching ${matches.length === 1 ? 'result' : 'results'}` : '';
     results.innerHTML = !term
-      ? emptyState('⌕', 'Search by tool name', 'Start typing to find a tool across Maths and Writing.')
-      : matches.length ? matches.map(toolCard).join('')
+      ? emptyState('⌕', 'Search by tool name', 'Start typing to find a tool, category or subcategory.')
+      : matches.length ? matches.map(item => item.group ? toolCard(item) : discoveryCard(item)).join('')
       : emptyState('⌕', 'No matching tools', 'Check the spelling or try a shorter search.');
   }
   input.addEventListener('input', () => {
@@ -120,7 +147,9 @@ function bindSearch() {
   update();
 }
 
+let disposeTool;
 function render() {
+  disposeTool?.();
   const path = location.pathname.replace(/\/$/, '') || '/';
   const category = categories.find(item => item.path === path);
   const group = groups.find(item => item.path === path);
@@ -130,12 +159,20 @@ function render() {
   main.innerHTML = category ? categoryPage(category) : toolPage ? toolPage.page(tool, breadcrumbs)
     : group ? groupPage(group) : path === '/search' ? searchPage() : homePage();
   document.title = path === '/' ? 'Toolbox' : `${category?.name ?? group?.name ?? tool?.name ?? 'Search'} | Toolbox`;
+  sidebar.querySelectorAll('nav details').forEach(details => {
+    const selected = tool?.category.path ?? group?.category.path ?? category?.path;
+    if (selected === details.dataset.category) details.open = true;
+  });
   sidebar.querySelectorAll('nav a').forEach(link => {
     const currentPath = tool?.category.path ?? group?.category.path ?? path;
     if (link.pathname === currentPath) link.setAttribute('aria-current', link.pathname === path ? 'page' : 'location');
     else link.removeAttribute('aria-current');
   });
-  toolPage?.bind(tool);
+  disposeTool=toolPage?.bind(tool);
+  if(tool){
+    try {localStorage.setItem('toolbox:recent',JSON.stringify([tool.path,...recentPaths().filter(path=>path!==tool.path)].slice(0,5)));} catch {}
+  }
+
   if (path === '/search') bindSearch();
 }
 
@@ -176,6 +213,12 @@ document.addEventListener('click', event => {
       event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   navigate(link.pathname + link.search, link.pathname === '/search');
+});
+main.addEventListener('submit', event=>{
+  if(!event.target.closest('.home-search'))return;
+  event.preventDefault();
+  const query=new FormData(event.target).get('q').trim();
+  navigate('/search'+(query?'?'+new URLSearchParams({q:query}):''),true);
 });
 window.addEventListener('popstate', () => {
   closeMenu();
