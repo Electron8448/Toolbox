@@ -1,5 +1,16 @@
+import beginnerGraphMaker from './categories/maths/algebra/beginner-graph-maker/index.js';
+import { makerPage, bindMaker } from './categories/maths/algebra/beginner-graph-maker/page.js';
+import fractionSimplifier from './categories/maths/fractions/fraction-simplifier/index.js';
+import graphingCalculator from './categories/maths/algebra/graphing-calculator/index.js';
+import { graphPage, bindGraph } from './categories/maths/algebra/graphing-calculator/page.js';
 import { categories, tools } from './categories/index.js';
 import { fractionPage, bindFraction } from './categories/maths/fractions/fraction-simplifier/page.js';
+
+const toolPages = new Map([
+  [fractionSimplifier.path, { page: fractionPage, bind: bindFraction }],
+  [graphingCalculator.path, { page: graphPage, bind: bindGraph }],
+  [beginnerGraphMaker.path, { page: makerPage, bind: bindMaker }]
+]);
 
 const main = document.querySelector('main');
 const sidebar = document.querySelector('#sidebar');
@@ -27,7 +38,7 @@ function breadcrumbs(...items) {
 
 function toolCard(tool) {
   return `<a class="tool-card" href="${tool.path}" data-route>
-    <span class="tool-icon" aria-hidden="true"><b>½</b></span>
+    <span class="tool-icon" aria-hidden="true"><b>${tool.icon ?? '½'}</b></span>
     <span><strong>${tool.name}</strong><small>${tool.category.name} · ${tool.group.name}</small></span>${arrow}
   </a>`;
 }
@@ -46,6 +57,14 @@ function homePage() {
       <span class="art-tile tile-maths">÷</span>
       <span class="art-tile tile-logo"><span class="logo"><i></i></span></span>
       <span class="art-tile tile-writing">Aa</span>
+    </div>
+  </section>
+  <section class="workspace panel" aria-labelledby="workspace-title">
+    <h2 id="workspace-title">Toolbox workspace</h2>
+    <p>Have an idea for a tool we should add? Submit it as a bug report on GitHub.</p>
+    <div class="actions">
+      <a class="primary" href="https://github.com/Electron8448/Toolbox">View workspace ↗</a>
+      <a class="secondary" href="https://github.com/Electron8448/Toolbox/issues/new?title=Tool%20suggestion%3A%20">Submit a bug report ↗</a>
     </div>
   </section>`;
 }
@@ -100,8 +119,9 @@ function render() {
   const path = location.pathname.replace(/\/$/, '') || '/';
   const category = categories.find(item => item.path === path);
   const tool = tools.find(item => item.path === path);
+  const toolPage = toolPages.get(path);
   main.className = path === '/' ? 'shell home' : 'shell inner';
-  main.innerHTML = category ? categoryPage(category) : tool ? fractionPage(tool, breadcrumbs)
+  main.innerHTML = category ? categoryPage(category) : toolPage ? toolPage.page(tool, breadcrumbs)
     : path === '/search' ? searchPage() : homePage();
   document.title = path === '/' ? 'Toolbox' : `${category?.name ?? tool?.name ?? 'Search'} | Toolbox`;
   sidebar.querySelectorAll('nav a').forEach(link => {
@@ -109,7 +129,7 @@ function render() {
     if (link.pathname === currentPath) link.setAttribute('aria-current', link.pathname === path ? 'page' : 'location');
     else link.removeAttribute('aria-current');
   });
-  if (tool) bindFraction();
+  toolPage?.bind();
   if (path === '/search') bindSearch();
 }
 
@@ -149,7 +169,7 @@ document.addEventListener('click', event => {
   if (!link || event.defaultPrevented || event.button !== 0 ||
       event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
-  navigate(link.pathname, link.pathname === '/search');
+  navigate(link.pathname + link.search, link.pathname === '/search');
 });
 window.addEventListener('popstate', () => {
   closeMenu();

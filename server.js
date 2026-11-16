@@ -11,6 +11,12 @@ const modules = [
   'categories/maths/fractions/fraction-simplifier/index.js',
   'categories/maths/fractions/fraction-simplifier/page.js',
   'categories/maths/fractions/fraction-simplifier/calculator.js',
+  'categories/maths/algebra/index.js',
+  'categories/maths/algebra/graphing-calculator/index.js',
+  'categories/maths/algebra/graphing-calculator/page.js',
+  'categories/maths/algebra/graphing-calculator/expression.js',
+  'categories/maths/algebra/beginner-graph-maker/index.js',
+  'categories/maths/algebra/beginner-graph-maker/page.js',
   'categories/writing/index.js'
 ];
 const assets = new Map(modules.map(file => ['/' + file, [file, 'text/javascript']]));

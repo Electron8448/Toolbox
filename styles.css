@@ -231,3 +231,31 @@ a:hover .arrow { transform: translate(2px, -2px); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.tool-group + .tool-group { margin-top: 25px; }
+.workspace, .graph-output { margin-top: 18px; }
+.workspace p, #graph-help, #graph-status { color: var(--muted); line-height: 1.5; margin-top: 8px; }
+.graph-ranges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.graph-ranges .field { margin-top: 0; }
+.graph-output canvas { display: block; width: 100%; height: clamp(240px, 53vw, 440px); margin-top: 10px; }
+@media (max-width: 520px) {
+  .graph-ranges { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .graph-output { padding-inline: 14px; }
+}
+
+.maker-form select {
+  width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #ded4ee;
+  border-radius: 10px; background: white; color: inherit; font: inherit;
+}
+.maker-values {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr));
+  gap: 12px; margin-top: 16px;
+}
+.maker-values .field { margin-top: 0; }
+#maker-status { margin-top: 8px; color: var(--muted); }
+.maker-equation { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 16px; }
+.maker-equation output { display: block; margin-top: 8px; font: 1.08rem ui-monospace, monospace; overflow-wrap: anywhere; }
+.drawing-grid { cursor: crosshair; }
+.maker-points:not([hidden]) { display: block; }
+.maker-points p { margin-top: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.maker-values[hidden] { display: none; }

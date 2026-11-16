@@ -1,3 +1,4 @@
+import algebra from './algebra/index.js';
 import fractions from './fractions/index.js';
 
 export default {
@@ -6,5 +7,5 @@ export default {
   icon: '÷',
   theme: 'maths',
   description: 'Useful mathematical tools for calculations and problem-solving.',
-  groups: [fractions]
+  groups: [fractions, algebra]
 };
