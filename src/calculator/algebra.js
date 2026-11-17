@@ -1,5 +1,5 @@
-import { field, tool, requireValue, format } from '../../tool-fields.js';
-const base = '/maths/algebra';
+import { requireValue, format } from '../categories/tool-fields.js';
+
 const combine = (a,b,sign=1) => Array.from({length: Math.max(a.length,b.length)},(_,i)=>(a[i]??0)+sign*(b[i]??0));
 function multiply(a,b) {
   requireValue(a.length+b.length<=22, 'Use a polynomial of degree 20 or lower.');
@@ -84,7 +84,7 @@ function print(poly) {
   }
   return terms.join('') || '0';
 }
-function solve(a,b,c) {
+export function solveQuadratic(a,b,c) {
   requireValue(a!==0, 'A quadratic requires a nonzero x² coefficient.');
   const scale=Math.max(Math.abs(a),Math.abs(b),Math.abs(c));
   [a,b,c]=[a/scale,b/scale,c/scale];
@@ -98,22 +98,15 @@ function solve(a,b,c) {
   const q=-0.5*(b+(b<0?-1:1)*Math.sqrt(discriminant));
   return [q/a,c/q].sort((left,right)=>left-right).map(root=>'x = '+format(root)).join('\n');
 }
-const expression = field('expression','Expression in x','text');
-const note = 'Use x as the variable, ^ for powers and brackets for grouping. For example, (x + 2)(x − 3).';
-export default [
-  tool(base,'equation-solver','Equation Solver','Solve a linear equation in x.',
-    [field('equation','Equation (e.g. 2x + 3 = 9)','text')], ({equation})=>{
-      const sides=equation.split('=');
-      requireValue(sides.length===2,'Enter an equation with one equals sign.');
-      const [constant,coefficient=0,...higher]=trim(combine(parse(sides[0]),parse(sides[1]),-1));
-      requireValue(!higher.length,'Use a linear equation in x.');
-      if (!coefficient) return constant ? 'No solution.' : 'Every real number is a solution.';
-      return 'x = '+format(-constant/coefficient);
-    }),
-  tool(base,'expression-simplifier','Expression Simplifier','Combine like terms in a polynomial in x.',[expression],
-    ({expression})=>print(parse(expression)),note),
-  tool(base,'expanding-brackets-calculator','Expanding Brackets Calculator','Expand brackets and collect like terms.',[expression],
-    ({expression})=>print(parse(expression)),note),
-  tool(base,'quadratic-equation-solver','Quadratic Equation Solver','Find the roots of ax² + bx + c = 0.',
-    [field('a','a (x² coefficient)'),field('b','b (x coefficient)'),field('c','c (constant)')],({a,b,c})=>solve(a,b,c))
-];
+export function solveLinear({ equation }) {
+  const sides=equation.split('=');
+  requireValue(sides.length===2,'Enter an equation with one equals sign.');
+  const [constant,coefficient=0,...higher]=trim(combine(parse(sides[0]),parse(sides[1]),-1));
+  requireValue(!higher.length,'Use a linear equation in x.');
+  if (!coefficient) return constant ? 'No solution.' : 'Every real number is a solution.';
+  return 'x = '+format(-constant/coefficient);
+}
+
+export function simplifyExpression({ expression }) {
+  return print(parse(expression));
+}

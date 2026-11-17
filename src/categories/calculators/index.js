@@ -1,6 +1,6 @@
 import {category,entry,n,t,area,select,format,requireValue,randomNumber} from '../shared.js';
 import {date,dateField,difference} from '../date-helpers.js';
-import {compileExpression} from '../maths/algebra/graphing-calculator/expression.js';
+import {compileExpression} from '../../calculator/expression.js';
 import percentages from '../maths/percentages/index.js';
 const percent=percentages.tools[0];
 const currency=(name,label)=>n(name,label);

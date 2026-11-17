@@ -1,4 +1,4 @@
-import { simplifyFraction, equivalentPage } from './calculator.js';
+import { simplifyFraction, equivalentPage } from '../../../../calculator/fractions.js';
 
 export function fractionPage(tool, breadcrumbs) {
   return `${breadcrumbs(tool.category, tool.name)}

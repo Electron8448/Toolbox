@@ -1,4 +1,4 @@
-import { compileExpression } from './expression.js';
+import { compileExpression } from '../../../../calculator/expression.js';
 
 export const defaultBounds = [-10, 10, -10, 10];
 

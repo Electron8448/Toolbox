@@ -1,3 +1,5 @@
+import { requireValue } from '../categories/tool-fields.js';
+
 function gcd(a, b) {
   while (b !== 0n) {
     [a, b] = [b, a % b];
@@ -55,4 +57,29 @@ export function equivalentPage({ numerator, denominator }, topFilter, bottomFilt
     return { numerator: numerator * factor, denominator: denominator * factor };
   });
   return { fractions, nextMultiplier: start + BigInt(size) };
+}
+
+export function readFraction(value) {
+  const parts = value.split('/');
+  requireValue(parts.length === 2, 'Enter each fraction in the format 3/4.');
+  const result = simplifyFraction(...parts);
+  requireValue(!result.error, result.error);
+  return [result.numerator, result.denominator];
+}
+export function fractionAsDecimal(top, bottom, suffix = '') {
+  const sign = top < 0n ? '-' : '';
+  const magnitude = top < 0n ? -top : top;
+  const precision = 16n;
+  const scale = 10n ** precision;
+  const scaled = (magnitude * scale * 2n + bottom) / (bottom * 2n);
+  const fraction = String(scaled % scale).padStart(Number(precision), '0').replace(/0+$/, '');
+  const exact = magnitude * scale % bottom === 0n;
+  return (exact ? '' : '≈ ') + sign + (scaled / scale) + (fraction ? '.' + fraction : '') + suffix;
+}
+export function calculateFraction({ first, second, operation }) {
+  const [a,b] = readFraction(first), [c,d] = readFraction(second);
+  const pairs = { add: [a*d+c*b,b*d], subtract: [a*d-c*b,b*d], multiply: [a*c,b*d], divide: [a*d,b*c] };
+  const result = simplifyFraction(...pairs[operation].map(String));
+  requireValue(!result.error, 'You cannot divide by a zero fraction.');
+  return result.numerator + '/' + result.denominator;
 }

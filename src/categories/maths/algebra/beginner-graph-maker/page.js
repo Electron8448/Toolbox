@@ -1,5 +1,5 @@
 import graphingCalculator from '../graphing-calculator/index.js';
-import { compileExpression } from '../graphing-calculator/expression.js';
+import { compileExpression } from '../../../../calculator/expression.js';
 import { draw, defaultBounds, plotArea } from '../graphing-calculator/page.js';
 
 const shapes = {
