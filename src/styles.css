@@ -370,3 +370,91 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .record-list { display: grid; gap: 8px; padding: 0; list-style: none; }
 .record-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; white-space: pre-wrap; }
 .record-list li span { flex: 1 1 170px; }
+
+.code-input {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  tab-size: 2;
+}
+
+.editor-workbench {
+  display: grid;
+  grid-template-columns: minmax(116px, 165px) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid #313742;
+  border-radius: 12px;
+  background: #1f232b;
+  color: #d6dce7;
+  color-scheme: dark;
+}
+.editor-explorer { background: #191c23; border-right: 1px solid #333944; padding: 12px 0; }
+.editor-explorer-title { padding: 5px 14px 13px; color: #b6bece; font-size: .73rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.editor-file, .editor-tabs button {
+  display: flex; align-items: center; gap: .55rem;
+  border: 0; background: transparent; color: #c5cede; font: inherit; font-size: .83rem;
+}
+.editor-file { width: 100%; padding: 8px 12px; text-align: left; }
+.editor-file:hover, .editor-file[aria-pressed="true"] { background: #2b3444; color: #fff; }
+.editor-tabs { display: flex; overflow-x: auto; background: #181b21; }
+.editor-tabs button { padding: 10px 13px; border-top: 2px solid transparent; border-right: 1px solid #353a45; white-space: nowrap; }
+.editor-tabs [aria-selected="true"] { border-top-color: #a5b6ff; background: #232831; color: #fff; }
+.editor-workbench button:focus-visible { outline: 2px solid #b3c3ff; outline-offset: -3px; }
+.file-icon { display: inline-block; min-width: 20px; font-weight: 800; text-align: center; }
+.file-icon.html { color: #ffa387; }
+.file-icon.css { color: #98c8ff; }
+.file-icon.javascript { color: #f7de7a; }
+.editor-panel {
+  --editor-line: 1.5rem;
+  --editor-height: 300px;
+  display: grid; grid-template-columns: minmax(0, 1fr);
+  background: #232831;
+}
+.editor-panel[hidden] { display: none; }
+.editor-panel .field { min-width: 0; }
+.editor-panel .field label {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+}
+
+
+  font-family: "IBM Plex Mono", Consolas, monospace; font-size: .9rem; line-height: var(--editor-line);
+}
+
+.code-editor-form .code-input {
+  height: var(--editor-height); padding: 12px 14px 12px 6px; resize: none;
+  border: 0; border-radius: 0; background: transparent; color: #e6eaf2; white-space: pre; overflow: auto;
+}
+.code-editor-form .code-input:focus-visible { outline: 2px solid #7f9af1; outline-offset: -2px; }
+.editor-status {
+  display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 15px;
+  padding: 6px 11px; background: #32416f; color: #f0f3ff; font-size: .75rem;
+}
+.editor-status span:first-child { margin-right: auto; }
+@media (max-width: 640px) {
+  .editor-workbench { grid-template-columns: minmax(0, 1fr); }
+  .editor-explorer { display: none; }
+  .editor-tabs button { padding-inline: 8px; }
+  .editor-tabs .file-icon { display: none; }
+}
+
+.editor-workbench { border-color: #37373d; background: #1e1e1e; color: #d4d4d4; }
+.editor-explorer, .editor-tabs { background: #252526; }
+.editor-explorer { border-right-color: #333; }
+.editor-explorer-title { color: #bbb; }
+.editor-file:hover, .editor-file[aria-pressed="true"] { background: #37373d; }
+.editor-tabs button { background: #2d2d2d; border-right-color: #252526; color: #c5c5c5; }
+.editor-tabs [aria-selected="true"] { background: #1e1e1e; border-top-color: #007acc; color: #fff; }
+.editor-panel { background: #1e1e1e; }
+
+.editor-status { background: #005f9e; }
+.editor-toolbar {
+  display: flex; flex-wrap: wrap; gap: 3px; padding: 7px 10px;
+  border-bottom: 1px solid #37373d; background: #252526;
+}
+.editor-toolbar button {
+  padding: 6px 8px; border: 0; border-radius: 4px; background: transparent;
+  color: #d4d4d4; font: inherit; font-size: .8rem;
+}
+.editor-toolbar button:hover:not(:disabled) { background: #37373d; color: #fff; }
+.editor-toolbar button:disabled { opacity: .45; cursor: default; }
+.editor-monaco { width: 100%; height: clamp(290px, 46vh, 560px); min-width: 0; }
+.editor-fallback .code-input { padding-left: 14px; }
+.editor-message { padding: 7px 11px; font-size: .8rem; }

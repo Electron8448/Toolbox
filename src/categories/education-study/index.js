@@ -53,7 +53,7 @@ export default category('Education & Study','/education-study','✎','Prepare re
     return total;
   }),
   entry('Periodic Table Explorer','Look up chemical elements by name, symbol or atomic number.',[t('query','Element name, symbol or atomic number',{optional:true})],async({query})=>{
-    const response=await fetch('/vendor/elements.json');requireValue(response.ok,'Element data is unavailable.');
+    const response=await fetch(new URL('../../vendor/elements.json', import.meta.url));requireValue(response.ok,'Element data is unavailable.');
     const elements=await response.json(),term=query.trim().toLowerCase();
     const headers=['Number','Symbol','Element','Atomic mass','Category','Period'];
     const matches=elements.filter(row=>String(row[0])===term||row[1].toLowerCase()===term||row[2].toLowerCase().includes(term));

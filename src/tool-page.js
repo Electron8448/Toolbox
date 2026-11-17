@@ -1,3 +1,4 @@
+import { bindEditor, editorWorkspace } from './categories/developer-tools/utilities/editor-ui.js';
 import {recordBook,showDetails} from './tool-results.js';
 const escape=value=>String(value??'').replace(/[&"<>]/g,char=>({'&':'&amp;','"':'&quot;','<':'&lt;','>':'&gt;'})[char]);
 
@@ -7,7 +8,7 @@ function control(field, index) {
   const required = field.optional ? '' : 'required';
   let input;
   if (field.type === 'textarea') {
-    input = `<textarea ${common} rows="6" ${required}>${escape(field.value)}</textarea>`;
+    input = `<textarea ${common} rows="6" ${field.code ? 'class="code-input" spellcheck="false" autocapitalize="off" autocomplete="off"' : ''} ${required}>${escape(field.value)}</textarea>`;
   } else if (field.type === 'select') {
     input = `<select ${common}>${field.choices.map(([value, label]) =>
       `<option value="${escape(value)}">${escape(label)}</option>`).join('')}</select>`;
@@ -24,9 +25,9 @@ export function standardPage(tool, breadcrumbs) {
   return `${breadcrumbs(tool.category, tool.group, tool.name)}
     <header class="page-heading"><span class="category-icon ${tool.category.theme}" aria-hidden="true">${tool.category.icon}</span>
       <h1>${tool.name}</h1><p>${tool.description}</p></header>
-    <form class="panel standard-tool">
+    <form class="panel standard-tool${tool.editor ? ' code-editor-form' : ''}">
       ${tool.note ? `<p class="tool-note">${tool.note}</p>` : ''}
-      ${tool.fields.map(control).join('')}
+      ${tool.editor ? editorWorkspace(tool.fields, control) : tool.fields.map(control).join('')}
       <p class="error" role="alert"></p>
       <div class="actions"><button class="primary">${tool.action??'Run tool'}</button><button class="secondary" type="reset">Reset</button></div>
     </form>
@@ -39,6 +40,7 @@ export function standardPage(tool, breadcrumbs) {
 
 export function bindStandard(tool) {
   const form = document.querySelector('.standard-tool');
+  const disposeEditor = tool.editor ? bindEditor(form, tool.fields) : undefined;
   const result = document.querySelector('.standard-result');
   const output = result.querySelector('pre');
   const details = result.querySelector('.result-details');
@@ -69,7 +71,10 @@ export function bindStandard(tool) {
     result.hidden=true;
   }
   form.addEventListener('change', updateFields);
-  form.addEventListener('input', clear);
+  form.addEventListener('input', () => {
+    if (tool.editor) error.textContent = '';
+    else clear();
+  });
   form.addEventListener('reset', () => {clear();queueMicrotask(updateFields);});
   form.addEventListener('submit', async event => {
     event.preventDefault();
@@ -107,5 +112,5 @@ export function bindStandard(tool) {
   });
   updateFields();
   return disposeResult;
-  function disposeResult(){dispose();}
+  function disposeResult(){dispose();disposeEditor?.();}
 }

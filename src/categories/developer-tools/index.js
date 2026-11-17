@@ -1,9 +1,10 @@
+import codeEditor from './utilities/code-editor.js';
 import {category,entry,area,select,requireValue} from '../shared.js';
 const text=area('text','Source text');
 const code=(name,description,run,fields=[text])=>entry(name,description,fields,run);
 async function pretty(text,parser,files) {
-  const {format}=await import('/vendor/prettier.mjs');
-  const plugins=await Promise.all(files.map(file=>import('/vendor/'+file+'.mjs')));
+  const {format}=await import('../../vendor/prettier.mjs');
+  const plugins=await Promise.all(files.map(file=>import('../../vendor/'+file+'.mjs')));
   return format(text,{parser,plugins:plugins.map(plugin=>plugin.default??plugin)});
 }
 function jsonLayout(text, pretty) {
@@ -56,14 +57,14 @@ export default category('Developer Tools','/developer-tools','⌘','Format code,
  ]],
  ['CSS',[
   code('CSS Minifier','Minify CSS using CSSO.',async({text})=>{
-    const {minify}=await import('/vendor/csso.mjs');return minify(text,{restructure:false}).css;
+    const {minify}=await import('../../vendor/csso.mjs');return minify(text,{restructure:false}).css;
   }),
   code('CSS Formatter','Format CSS using Prettier.',({text})=>pretty(text,'css',['postcss']))
  ]],
  ['JavaScript',[
   code('JavaScript Formatter','Format JavaScript using Prettier.',({text})=>pretty(text,'babel',['babel','estree'])),
   code('JavaScript Minifier','Minify JavaScript without running it.',async({text})=>{
-    await import('/vendor/terser.js');
+    await import('../../vendor/terser.js');
     requireValue(globalThis.Terser,'The JavaScript minifier is unavailable. Reload this page.');
     return (await globalThis.Terser.minify(text,{compress:false,mangle:false})).code??'';
   })
@@ -73,6 +74,7 @@ export default category('Developer Tools','/developer-tools','⌘','Format code,
   code('URL Encoder/Decoder','Percent-encode or decode an individual URL component.',({text,mode})=>mode==='Encode'?encodeURIComponent(text):decodeURIComponent(text),[text,mode])
  ]],
  ['Utilities',[
+  codeEditor,
   code('UUID Generator','Generate a random UUID version 4.',()=>crypto.randomUUID(),[]),
   code('Hash Generator','Compute a SHA hash for UTF-8 text.',async({text,algorithm})=>{
     const digest=await crypto.subtle.digest(algorithm,new TextEncoder().encode(text));

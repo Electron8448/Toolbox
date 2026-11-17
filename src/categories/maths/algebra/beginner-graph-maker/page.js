@@ -1,3 +1,4 @@
+import { sitePath } from '../../../../routing.js';
 import graphingCalculator from '../graphing-calculator/index.js';
 import { compileExpression } from '../../../../calculator/expression.js';
 import { draw, defaultBounds, plotArea } from '../graphing-calculator/page.js';
@@ -89,7 +90,7 @@ export function bindMaker() {
     evaluate = expression ? compileExpression(expression) : undefined;
     output.textContent = expression ? 'y = ' + expression : '';
     open.hidden = !expression;
-    if (expression) open.href = graphingCalculator.path + '?' + new URLSearchParams({ expression });
+    if (expression) open.href = sitePath(graphingCalculator.path) + '?' + new URLSearchParams({ expression });
   }
 
   function updateDots() {
@@ -153,7 +154,7 @@ export function bindMaker() {
     const expression = equation(selected, scale.valueAsNumber, selected.shift ? horizontal.valueAsNumber : 0, vertical.valueAsNumber);
     evaluate = compileExpression(expression);
     output.textContent = 'y = ' + expression;
-    open.href = graphingCalculator.path + '?' + new URLSearchParams({ expression });
+    open.href = sitePath(graphingCalculator.path) + '?' + new URLSearchParams({ expression });
     repaint();
   }
 

@@ -1,3 +1,4 @@
+import { staticHosting } from '../../routing.js';
 import {category,entry,t,n,area,select,requireValue} from '../shared.js';
 const text=area();
 const characters=value=>[...new Intl.Segmenter(undefined,{granularity:'grapheme'}).segment(value)].length;
@@ -8,7 +9,7 @@ function webURL(value){
 }
 async function qr(value) {
   requireValue(value.trim(),'Enter text or a link to encode.');
-  const {default:make}=await import('/vendor/qrcode.mjs');
+  const {default:make}=await import('../../vendor/qrcode.mjs');
   make.stringToBytes=text=>new TextEncoder().encode(text);
   const qr=make(0,'M');qr.addData(value,'Byte');qr.make();
   const size=qr.getModuleCount();
@@ -21,7 +22,7 @@ async function qr(value) {
   return {text:value,blob,filename:'toolbox-qr.png'};
 }
 const preview=(name,description,kind)=>entry(name,description,[text],async({text})=>{
-  const html=kind==='markdown'?(await import('/vendor/marked.mjs')).marked.parse(text):text;
+  const html=kind==='markdown'?(await import('../../vendor/marked.mjs')).marked.parse(text):text;
   return {text,html:await html};
 },'The preview blocks scripts, forms and external resources.');
 function snippet(name,description,kind) {
@@ -45,6 +46,7 @@ export default category('Web & SEO Tools','/web-seo-tools','◎','Inspect URLs, 
       'Path: '+parsed.pathname,'Fragment: '+(parsed.hash||'None'),...Array.from(parsed.searchParams,([key,value])=>key+' = '+value)].join('\n');
   }),
   entry('Website Link Checker','Check HTTP status for up to five public website links.',[area('text','One HTTP or HTTPS link per line')],async({text})=>{
+    requireValue(!staticHosting,'The link checker needs the Toolbox Node server. Run Toolbox locally to use it.');
     const urls=text.split(/\r?\n/).map(line=>line.trim()).filter(Boolean);
     requireValue(urls.length&&urls.length<=5,'Enter between one and five links.');
     const response=await fetch('/api/check-links',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(urls)});

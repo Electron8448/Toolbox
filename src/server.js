@@ -9,10 +9,10 @@ const sourceFiles = readdirSync(new URL('./categories/', import.meta.url), {recu
   .filter(file=>file.endsWith('.js')).map(file=>'categories/'+file.replaceAll('\\','/'));
 const calculators = readdirSync(new URL('./calculator/', import.meta.url))
   .filter(file => file.endsWith('.js')).map(file => 'calculator/' + file);
-const vendorFiles = readdirSync(new URL('./vendor/',import.meta.url))
-  .filter(file=>/\.(?:m?js|json)$/.test(file)).map(file=>'vendor/'+file);
-const modules = ['app.js','tool-page.js','tool-results.js',...sourceFiles,...calculators,...vendorFiles];
-const assets=new Map(modules.map(file=>['/'+file,[file,file.endsWith('.json')?'application/json':'text/javascript']]));
+const vendorFiles = readdirSync(new URL('./vendor/',import.meta.url), {recursive:true})
+  .filter(file=>/\.(?:m?js|json|css)$/.test(file)).map(file=>'vendor/'+file.replaceAll('\\','/'));
+const modules = ['app.js','routing.js','tool-page.js','tool-results.js',...sourceFiles,...calculators,...vendorFiles];
+const assets=new Map(modules.map(file=>['/'+file,[file,file.endsWith('.json')?'application/json':file.endsWith('.css')?'text/css':'text/javascript']]));
 assets.set('/styles.css',['styles.css','text/css']);
 const port = Number(process.env.PORT ?? 3000);
 

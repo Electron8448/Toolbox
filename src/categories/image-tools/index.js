@@ -66,7 +66,7 @@ export default category('Image Tools','/image-tools','▧','Convert, edit and in
   transform('Image Metadata Viewer','Inspect file details and available camera metadata.',[],async(image,_,file)=>{
     const basic=['Name: '+file.name,'Type: '+(file.type||'Unknown'),'Bytes: '+file.size,
       'Dimensions: '+image.width+' × '+image.height,'Last modified: '+new Date(file.lastModified).toLocaleString()];
-    const {parse}=await import('/vendor/exifr.mjs');
+    const {parse}=await import('../../vendor/exifr.mjs');
     let camera;
     try {camera=await parse(file,{gps:true,tiff:true,exif:true});} catch {}
     for(const key of ['Make','Model','LensModel','DateTimeOriginal','ExposureTime','FNumber','ISO','FocalLength','Orientation','latitude','longitude']){

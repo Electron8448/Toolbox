@@ -1,3 +1,4 @@
+import { routePath, sitePath } from './routing.js';
 import { standardPage, bindStandard } from './tool-page.js';
 import beginnerGraphMaker from './categories/maths/algebra/beginner-graph-maker/index.js';
 import { makerPage, bindMaker } from './categories/maths/algebra/beginner-graph-maker/page.js';
@@ -20,8 +21,8 @@ const toolboxMark = document.querySelector('.toolbox-mark').outerHTML;
 document.querySelector('#nav-categories').innerHTML = categories.map(category => `
   <details data-category="${category.path}">
     <summary>${category.name}</summary>
-    <a href="${category.path}" data-route>All ${category.name}</a>
-    ${groups.filter(group=>group.category===category).map(group=>`<a href="${group.path}" data-route>${group.name}</a>`).join('')}
+    <a href="${sitePath(category.path)}" data-route>All ${category.name}</a>
+    ${groups.filter(group=>group.category===category).map(group=>`<a href="${sitePath(group.path)}" data-route>${group.name}</a>`).join('')}
   </details>`).join('');
 const arrow = '<span class="arrow" aria-hidden="true">↗</span>';
 
@@ -30,7 +31,7 @@ function badge(category) {
 }
 
 function searchForm(home = false) {
-  return `<form class="search-box" role="search" action="/search">
+  return `<form class="search-box" role="search" action="${sitePath('/search')}">
     <span class="magnifier" aria-hidden="true"></span>
     <label class="sr-only" for="query">Search tools</label>
     <input id="query" name="q" type="search" placeholder="Search for a tool…" autocomplete="off">
@@ -39,14 +40,14 @@ function searchForm(home = false) {
 }
 
 function breadcrumbs(...items) {
-  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/" data-route>Home</a>
+  return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${sitePath('/')}" data-route>Home</a>
     ${items.map(item => `<span aria-hidden="true">/</span>${typeof item === 'string'
       ? `<span aria-current="page">${item}</span>`
-      : `<a href="${item.path}" data-route>${item.name}</a>`}`).join('')}</nav>`;
+      : `<a href="${sitePath(item.path)}" data-route>${item.name}</a>`}`).join('')}</nav>`;
 }
 
 function toolCard(tool) {
-  return `<a class="tool-card" href="${tool.path}" data-route>
+  return `<a class="tool-card" href="${sitePath(tool.path)}" data-route>
     <span class="tool-icon" aria-hidden="true"><b>${tool.icon ?? tool.category.icon}</b></span>
     <span><strong>${tool.name}</strong><small>${tool.category.name} · ${tool.group.name}</small></span>${arrow}
   </a>`;
@@ -54,7 +55,7 @@ function toolCard(tool) {
 
 function discoveryCard(item) {
   const category=item.category??item;
-  return `<a class="tool-card" data-route href="${item.path}">${badge(category)}
+  return `<a class="tool-card" data-route href="${sitePath(item.path)}">${badge(category)}
     <span><strong>${item.name}</strong><small>${item.category?category.name:item.description}</small></span>${arrow}</a>`;
 }
 
@@ -104,7 +105,7 @@ function categoryPage(category) {
   return `${breadcrumbs(category.name)}
     <header class="page-heading">${badge(category)}<h1>${category.name}</h1><p>${category.description}</p></header>
     ${groups.filter(group => group.category === category).map(group => `<section class="tool-group">
-      <h2><a href="${group.path}" data-route>${group.name}</a></h2>
+      <h2><a href="${sitePath(group.path)}" data-route>${group.name}</a></h2>
       ${tools.filter(tool => tool.group === group).map(toolCard).join('')}
     </section>`).join('')}`;
 }
@@ -140,7 +141,7 @@ function bindSearch() {
   input.addEventListener('input', () => {
     const params = new URLSearchParams();
     if (input.value) params.set('q', input.value);
-    history.replaceState(null, '', '/search' + (params.size ? '?' + params : ''));
+    history.replaceState(null, '', sitePath('/search') + (params.size ? '?' + params : ''));
     update();
   });
   input.form.addEventListener('submit', event => event.preventDefault());
@@ -150,7 +151,7 @@ function bindSearch() {
 let disposeTool;
 function render() {
   disposeTool?.();
-  const path = location.pathname.replace(/\/$/, '') || '/';
+  const path = routePath(location.pathname);
   const category = categories.find(item => item.path === path);
   const group = groups.find(item => item.path === path);
   const tool = tools.find(item => item.path === path);
@@ -165,7 +166,7 @@ function render() {
   });
   sidebar.querySelectorAll('nav a').forEach(link => {
     const currentPath = tool?.category.path ?? group?.category.path ?? path;
-    if (link.pathname === currentPath) link.setAttribute('aria-current', link.pathname === path ? 'page' : 'location');
+    if (routePath(link.pathname) === currentPath) link.setAttribute('aria-current', routePath(link.pathname) === path ? 'page' : 'location');
     else link.removeAttribute('aria-current');
   });
   disposeTool=toolPage?.bind(tool);
@@ -212,13 +213,13 @@ document.addEventListener('click', event => {
   if (!link || event.defaultPrevented || event.button !== 0 ||
       event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
-  navigate(link.pathname + link.search, link.pathname === '/search');
+  navigate(link.pathname + link.search, routePath(link.pathname) === '/search');
 });
 main.addEventListener('submit', event=>{
   if(!event.target.closest('.home-search'))return;
   event.preventDefault();
   const query=new FormData(event.target).get('q').trim();
-  navigate('/search'+(query?'?'+new URLSearchParams({q:query}):''),true);
+  navigate(sitePath('/search')+(query?'?'+new URLSearchParams({q:query}):''),true);
 });
 window.addEventListener('popstate', () => {
   closeMenu();

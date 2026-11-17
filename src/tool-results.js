@@ -112,14 +112,18 @@ export function showDetails(target,result,write) {
   if(result.blob){
     const url=URL.createObjectURL(result.blob);
     cleanups.push(()=>URL.revokeObjectURL(url));
-    const img=node('img');img.src=url;img.alt='Generated image';
-    const link=node('a','Download image');link.href=url;link.download=result.filename;link.className='primary';
-    append(img);append(link);
+    if (!result.downloadLabel) {
+      const img=node('img');img.src=url;img.alt='Generated image';
+      append(img);
+    }
+    const link=node('a',result.downloadLabel ?? 'Download image');
+    link.href=url;link.download=result.filename;link.className='primary';
+    append(link);
   }
   if(result.html!==undefined){
-    const frame=node('iframe');frame.title='Document preview';frame.setAttribute('sandbox','');
-    frame.srcdoc='<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data:; style-src \'unsafe-inline\'; form-action \'none\'; base-uri \'none\'"><meta name="viewport" content="width=device-width">'+result.html;
-    frame.inert=true;append(frame);
+    const frame=node('iframe');frame.title='Document preview';frame.setAttribute('sandbox',result.runScripts ? 'allow-scripts' : '');
+    frame.srcdoc='<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data:; style-src \'unsafe-inline\' data:; '+(result.runScripts?'script-src data:; ':'')+'form-action \'none\'; base-uri \'none\'"><meta name="viewport" content="width=device-width">'+result.html;
+    frame.inert=!result.runScripts;append(frame);
   }
   if(result.live){
     const tick=()=>write(result.live());tick();
