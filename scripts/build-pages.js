@@ -42,16 +42,18 @@ if (previous) {
 await mkdir(output);
 
 const source = new URL('../src/', import.meta.url);
-for (const path of ['app.js', 'routing.js', 'tool-page.js', 'tool-results.js', 'styles.css', 'calculator', 'categories', 'vendor']) {
+for (const path of ['app.js', 'readme-page.js', 'routing.js', 'tool-page.js', 'tool-results.js', 'styles.css', 'toolbox-icon.svg', 'calculator', 'categories', 'vendor']) {
   await cp(new URL(path, source), new URL(path, output), { recursive: true });
 }
+
+await cp(new URL('../README.md', import.meta.url), new URL('README.md', output));
 
 const template = await readFile(new URL('index.html', source), 'utf8');
 const html = template
   .replace('<title>Toolbox</title>', `<title>Toolbox</title>\n  <meta name="toolbox-pages-base" content="${base}">`)
-  .replaceAll(/(href|src)="\/(styles\.css|app\.js)"/g, (_, attr, asset) => `${attr}="${base}/${asset}"`)
+  .replaceAll(/(href|src)="\/(styles\.css|app\.js|toolbox-icon\.svg)"/g, (_, attr, asset) => `${attr}="${base}/${asset}"`)
   .replaceAll(/href="\/(search)?" data-route/g, (_, search) => `href="${base}/${search ? 'search/' : ''}" data-route`);
-const routes = ['/', '/search', ...[...categories, ...groups, ...tools].map(item => item.path)];
+const routes = ['/', '/search', '/readme', ...[...categories, ...groups, ...tools].map(item => item.path)];
 for (const path of routes) {
   const directory = new URL('.' + (path === '/' ? '/' : path + '/'), output);
   await mkdir(directory, { recursive: true });

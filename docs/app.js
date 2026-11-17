@@ -1,3 +1,5 @@
+import { editorPage, bindEditor } from './categories/developer-tools/utilities/editor-ui.js';
+import { readmePage, bindReadme } from './readme-page.js';
 import { routePath, sitePath } from './routing.js';
 import { standardPage, bindStandard } from './tool-page.js';
 import beginnerGraphMaker from './categories/maths/algebra/beginner-graph-maker/index.js';
@@ -75,6 +77,7 @@ function homePage() {
       <h1>Everything you need, <em>all in one toolbox.</em></h1>
       <p>Find a calculator, converter or writing tool in one place.</p>
       <div class="home-search">${searchForm(true)}</div>
+      <div class="actions"><a class="primary" href="${sitePath('/readme')}" data-route>Read the README</a></div>
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="art-grid"></div>
@@ -90,7 +93,7 @@ function homePage() {
     <h2 id="workspace-title">Toolbox workspace</h2>
     <p>Have an idea for a tool we should add? Submit it as a bug report on GitHub.</p>
     <div class="actions">
-      <a class="primary" href="https://github.com/Electron8448/Toolbox">View workspace ↗</a>
+      <a class="secondary" href="https://github.com/Electron8448/Toolbox">View workspace ↗</a>
       <a class="secondary" href="https://github.com/Electron8448/Toolbox/issues/new?title=Tool%20suggestion%3A%20">Submit a bug report ↗</a>
     </div>
   </section>`;
@@ -155,11 +158,11 @@ function render() {
   const category = categories.find(item => item.path === path);
   const group = groups.find(item => item.path === path);
   const tool = tools.find(item => item.path === path);
-  const toolPage = toolPages.get(path) ?? (tool?.run ? { page: standardPage, bind: bindStandard } : null);
+  const toolPage = toolPages.get(path) ?? (tool?.editor ? { page: editorPage, bind: bindEditor } : tool?.run ? { page: standardPage, bind: bindStandard } : null);
   main.className = path === '/' ? 'shell home' : 'shell inner';
   main.innerHTML = category ? categoryPage(category) : toolPage ? toolPage.page(tool, breadcrumbs)
-    : group ? groupPage(group) : path === '/search' ? searchPage() : homePage();
-  document.title = path === '/' ? 'Toolbox' : `${category?.name ?? group?.name ?? tool?.name ?? 'Search'} | Toolbox`;
+    : group ? groupPage(group) : path === '/readme' ? readmePage(breadcrumbs) : path === '/search' ? searchPage() : homePage();
+  document.title = path === '/readme' ? 'README | Toolbox' : path === '/' ? 'Toolbox' : `${category?.name ?? group?.name ?? tool?.name ?? 'Search'} | Toolbox`;
   sidebar.querySelectorAll('nav details').forEach(details => {
     const selected = tool?.category.path ?? group?.category.path ?? category?.path;
     if (selected === details.dataset.category) details.open = true;
@@ -175,6 +178,7 @@ function render() {
   }
 
   if (path === '/search') bindSearch();
+  if (path === '/readme') bindReadme();
 }
 
 function closeMenu() {

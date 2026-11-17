@@ -6,25 +6,13 @@
 
 <p align="center">
   <a href="https://electron8448.github.io/Toolbox/"><strong>Open Toolbox</strong></a>
-  · <a href="#quick-start">Run locally</a>
   · <a href="#run-playwright-tests">Run tests</a>
   · <a href="GITHUB-PAGES.md">Publish to GitHub Pages</a>
 </p>
 
 <p align="center"><strong>13 categories</strong> · <strong>56 subcategories</strong> · <strong>163 tools</strong></p>
 
-> The GitHub Pages URL returned 404 when checked. The local and static builds are available through the steps below.
-
-## Quick start
-
-Use Node.js 24 and npm. From the folder containing `package.json`:
-
-```bash
-npm ci
-npm start
-```
-
-Open [http://127.0.0.1:3000](http://127.0.0.1:3000/). Press Ctrl+C in the terminal to stop the server.
+> To publish the website on GitHub Pages, follow the [branch deployment setup](GITHUB-PAGES.md).
 
 ## What you can do
 
@@ -38,15 +26,15 @@ Browse the category cards on the homepage or open the collapsible sidebar to rea
 
 ## Code Editor
 
-Open **Developer Tools → Utilities → Code Editor** to edit a small website in three files.
+Open **Developer Tools → Utilities → Code Editor**. The starter project includes an HTML page, a stylesheet and a JavaScript file.
 
-| File | What goes there |
-| --- | --- |
-| `index.html` | HTML for the page body |
-| `styles.css` | Styles shared by the preview and export |
-| `script.js` | JavaScript that runs in the preview |
+- Use **New file**, **Rename** and **File type** to organise source files. Changing the type updates the file extension and syntax highlighting. Text files open with Monaco syntax colours and editing commands.
+- Use **Upload files** to add files, or **Open folder** to reopen a project with its folder structure and assets.
+- Use **Download file** to save the active file or **Download project** to save a ZIP. To resume on another device, extract the ZIP and open that folder in the editor.
+- Use **Run preview** or **Ctrl+Enter** (**Cmd+Enter** on macOS) to preview an HTML page in an isolated frame. **Download HTML** saves the selected preview as a standalone page.
+- Toolbox saves draft files in the current browser.
 
-Use **Open file** to load local source or **Save file** to download the active file. The Monaco editor provides suggestions, diagnostics, find and replace, and formatting. Use **Ctrl+Enter** on Windows or **Cmd+Enter** on macOS to run the preview. **Download HTML** packages the three files into a standalone page. Drafts are saved in the current browser.
+This README is available from **Read the README** on the Toolbox homepage.
 
 ## Available tools
 
@@ -408,7 +396,6 @@ Failed tests can leave traces in `test-results/`. The HTML report is in `playwri
 ## Troubleshooting
 
 - **Dependencies fail to install:** Run `npm ci` from the project root with Node.js 24 and check that the npm registry is reachable.
-- **Port 3000 is in use:** Stop the process using it or set `PORT` before running `npm start`. In PowerShell, use `$env:PORT = '3001'`. In bash, use `PORT=3001 npm start`.
 - **Playwright cannot find Chromium:** Run `npx playwright install chromium`. On Linux, `npx playwright install --with-deps chromium` can also install the required system libraries.
 - **Port 3195 is in use:** Stop the other server. To test against a Toolbox server you deliberately started on 3195, set `PLAYWRIGHT_REUSE_SERVER=1` before running Playwright.
 - **A browser test fails:** Run its spec with `--headed` or `--ui` and open the trace from the failed test to inspect the page and actions.

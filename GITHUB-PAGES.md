@@ -8,7 +8,7 @@
 4. Under **Branch**, select **main** and **/docs**, then click **Save**.
 5. When it finishes publishing, open the URL shown under **Settings → Pages**. For this repository's default domain, it is `https://electron8448.github.io/Toolbox/`.
 
-For later updates, rebuild `docs/`, then commit and push it with the source changes. GitHub publishes from the branch automatically. The `/docs` publishing folder does not appear in the public URL.
+For later updates, rebuild `docs/`, then commit and push it with the source changes. GitHub publishes from the branch automatically. The `/docs` publishing folder does not appear in the public URL. If the public URL shows the repository README, verify that the branch folder is set to `/docs` and that `docs/index.html` is on the published branch. Toolbox links to the README from its homepage.
 
 The build defaults to the `/Toolbox` project path. Set `PAGES_BASE_PATH` for a different repository path, or to `/` for a root site or a custom domain serving Toolbox at the root.
 

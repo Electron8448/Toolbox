@@ -122,7 +122,7 @@ export function showDetails(target,result,write) {
   }
   if(result.html!==undefined){
     const frame=node('iframe');frame.title='Document preview';frame.setAttribute('sandbox',result.runScripts ? 'allow-scripts' : '');
-    frame.srcdoc='<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data:; style-src \'unsafe-inline\' data:; '+(result.runScripts?'script-src data:; ':'')+'form-action \'none\'; base-uri \'none\'"><meta name="viewport" content="width=device-width">'+result.html;
+    frame.srcdoc='<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data:; font-src data:; media-src data:; style-src \'unsafe-inline\' data:; '+(result.runScripts?"script-src 'unsafe-inline' data:; ":'')+'form-action \'none\'; base-uri \'none\'"><meta name="viewport" content="width=device-width">'+result.html;
     frame.inert=!result.runScripts;append(frame);
   }
   if(result.live){

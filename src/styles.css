@@ -40,6 +40,9 @@ button { cursor: pointer; }
 .hamburger::before { top: -5px; }
 .hamburger::after { top: 5px; }
 .brand { display: inline-flex; align-items: center; border-radius: 8px; }
+.topbar-brand { gap: 8px; }
+.home-symbol { flex: none; color: var(--brand-dark); }
+.topbar-brand:hover .home-symbol { color: var(--brand); }
 .toolbox-mark {
   position: relative;
   isolation: isolate;
@@ -458,3 +461,28 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .editor-monaco { width: 100%; height: clamp(290px, 46vh, 560px); min-width: 0; }
 .editor-fallback .code-input { padding-left: 14px; }
 .editor-message { padding: 7px 11px; font-size: .8rem; }
+
+.editor-files { max-height: 57vh; overflow: auto; }
+.editor-files .editor-file { overflow-wrap: anywhere; }
+.editor-tab-controls { display: flex; align-items: center; background: #252526; min-width: 0; }
+.editor-tab-controls .editor-tabs { flex: 1; min-width: 0; }
+.editor-tab-controls > label { display: flex; align-items: center; gap: 6px; padding: 4px 8px; font-size: .74rem; white-space: nowrap; }
+.code-editor-form .editor-type { width: auto; min-height: 28px; color: #f0f0f0; background: #333; border: 1px solid #62626b; border-radius: 4px; padding: 3px 5px; }
+.editor-status button { border: 0; background: transparent; color: #fff; font: inherit; padding: 0 4px; }
+.editor-status button:disabled { opacity: .5; }
+.editor-status button:hover:not(:disabled) { text-decoration: underline; }
+.editor-binary { padding: 25px; }
+.editor-preview-actions { align-items: end; }
+.editor-preview-actions label { display: grid; gap: 4px; font-size: .86rem; font-weight: 700; max-width: 100%; }
+.editor-preview-actions select { max-width: 100%; }
+.editor-path-dialog { width: min(440px, calc(100% - 32px)); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+.editor-path-dialog .field { margin-top: 12px; }
+.editor-path-dialog::backdrop { background: #24154299; }
+.readme-content { line-height: 1.65; overflow-wrap: anywhere; }
+.readme-content :is(h2,h3,h4,p,details,pre,table,blockquote) { margin: 12px 0; }
+.readme-content a { color: var(--brand-dark); text-decoration: underline; }
+.readme-content summary { cursor: pointer; }
+.readme-content pre { overflow: auto; padding: 10px; background: #f1eaff; border-radius: 8px; }
+.readme-content table { display: block; overflow: auto; border-collapse: collapse; }
+.readme-content :is(th,td) { border: 1px solid var(--line); padding: 6px 9px; text-align: left; }
+.code-editor-form .editor-fallback[hidden] { display: none; }

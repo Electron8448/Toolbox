@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f9f8fc">
   <title>Toolbox</title>
   <meta name="toolbox-pages-base" content="/Toolbox">
-  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJxSURBVFhHY2AYKkB5crmD8uTSBhCNLkcXALJcZUrZfxCNLkdTgPB5yQGIA0oOQPj4Q+PzdnuHz9vtG6AYpzqCAOZzbBhfaIAt3mH/H4y32+NURxBQEALUcQAMkJoGaOAA0nIBVRxQ7n/foTzwbgM5eEXV3AUnpxQfAGEQG0Xe/z5RnmCoCLy3vyLw3n9y8PTsbf+3tfSDMYiNLEeUA8r97yuAFE8sePZ/Vd97kvH5xdMhwb/DHswGmQNxwN376HZhBaCgAmnYu/Tr/zun/5OMHx07///FwflgDGJ3ZTyB+D7wLnHpoTzg7vXqkPv/b574h2E4qfjwmu/w4K8Muq+BbhcGKAu8bwELfnTDyMHTy19AHBBw9zi6XVhBeeC96SANG6d9xDCMVHzpwB9EAgy4k4FuFwaoj7/PURFw9zlIw9kdvzAMJBUvbnsDifuAu99LQu9LoNuHASr9bweANLQmPMIwjFQMSj9NMQ9hIbAe3S4U4CK/wsJVcWVDpPHey/GWR/6nOR/7XxFxhiJc4HfyP8gsEA7U3bbGVWlFBLq9cOAmv1TDTWnlf5pjxZXL7eXXC6DbDwbuyqvuYmigAXZVWnndVX6VAbr9DP7aOwqCdPccIAa3pey8sHXq9gfoGCSOrhYr1tuzJ1jvkA+KAyKNj2pEmpz4Twxe07Pv//8nWzAwSBxdLS4cbnwcs06IMDlxHV0hNkyxA4yPP0e3GwwijY83YCjGgpsTDoMtQ8cgcXS1OPB0dLvBgJRooARjDX4YIDYayMa4gh8GiI0GCjD24IcBWkcD3uCHAZpFA6Hgh4EI02Me4KigNjY5jrs+GJEAAA6L/RCask0GAAAAAElFTkSuQmCC">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="/Toolbox/toolbox-icon.svg">
   <link rel="stylesheet" href="/Toolbox/styles.css">
   <script type="module" src="/Toolbox/app.js"></script>
 </head>
@@ -18,7 +18,10 @@
       <button class="icon-button" id="menu" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">
         <span class="hamburger" aria-hidden="true"></span>
       </button>
-      <a class="brand" href="/Toolbox/" data-route aria-label="Toolbox home">
+      <a class="brand topbar-brand" href="/Toolbox/" data-route aria-label="Toolbox home">
+        <svg class="home-symbol" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m3 11 9-7 9 7M5.5 9.2V20H10v-6h4v6h4.5V9.2"/>
+        </svg>
         <span class="toolbox-mark" aria-hidden="true">
           <span class="toolbox-lid"><span>Tool<strong>box</strong></span></span>
           <span class="toolbox-rim"></span>
