@@ -40,9 +40,6 @@ button { cursor: pointer; }
 .hamburger::before { top: -5px; }
 .hamburger::after { top: 5px; }
 .brand { display: inline-flex; align-items: center; border-radius: 8px; }
-.topbar-brand { gap: 8px; }
-.home-symbol { flex: none; color: var(--brand-dark); }
-.topbar-brand:hover .home-symbol { color: var(--brand); }
 .toolbox-mark {
   position: relative;
   isolation: isolate;
