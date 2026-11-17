@@ -144,7 +144,8 @@ function bindSearch() {
   input.addEventListener('input', () => {
     const params = new URLSearchParams();
     if (input.value) params.set('q', input.value);
-    history.replaceState(null, '', sitePath('/search') + (params.size ? '?' + params : ''));
+    renderedURL = sitePath('/search') + (params.size ? '?' + params : '');
+    history.replaceState(null, '', renderedURL);
     update();
   });
   input.form.addEventListener('submit', event => event.preventDefault());
@@ -152,7 +153,9 @@ function bindSearch() {
 }
 
 let disposeTool;
+let renderedURL;
 function render() {
+  renderedURL = location.pathname + location.search;
   disposeTool?.();
   const path = routePath(location.pathname);
   const category = categories.find(item => item.path === path);
@@ -227,6 +230,6 @@ main.addEventListener('submit', event=>{
 });
 window.addEventListener('popstate', () => {
   closeMenu();
-  render();
+  if (renderedURL !== location.pathname + location.search) render();
 });
 render();
