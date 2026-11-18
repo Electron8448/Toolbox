@@ -384,7 +384,7 @@ export function bindEditor() {
       base:'vs-dark',inherit:true,rules:[
         {token:'keyword',foreground:'569CD6'},{token:'tag',foreground:'569CD6'},{token:'string',foreground:'CE9178'},
         {token:'comment',foreground:'6A9955'},{token:'number',foreground:'B5CEA8'},{token:'attribute.name',foreground:'9CDCFE'}
-      ],colors:{'editor.background':'#1E1E1E','editor.foreground':'#D4D4D4'}
+      ],colors:{'editor.background':'#182924','editor.foreground':'#E0EBE4'}
     });
     host.hidden = false;
     editor = monaco.editor.create(host, {

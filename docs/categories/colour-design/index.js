@@ -1,5 +1,5 @@
 import {category,entry,field,n,t,select,integer,requireValue,format} from '../shared.js';
-const colour=(name,label,value='#7453c7')=>field(name,label,'color',{value});
+const colour=(name,label,value='#086456')=>field(name,label,'color',{value});
 function rgb(hex) {
   const clean=hex.trim().replace(/^#/,'');
   requireValue(/^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean),'Enter a 3- or 6-digit HEX colour.');
@@ -14,7 +14,7 @@ function hslToHex(h,s,l) {
   return hex([channel(0),channel(8),channel(4)]);
 }
 const gradient=entry('Gradient Generator','Preview a two-colour gradient and copy the CSS.',[
-  colour('first','First colour'),colour('second','Second colour','#82E2CC'),n('angle','Angle (degrees)',{value:90})
+  colour('first','First colour'),colour('second','Second colour','#E9B75B'),n('angle','Angle (degrees)',{value:90})
 ],({first,second,angle})=>{
   const background='linear-gradient('+angle+'deg, '+first+', '+second+')';
   return {text:'background: '+background+';',style:{background}};
@@ -38,7 +38,7 @@ export default category('Colour & Design','/colour-design','◈','Create palette
   }),gradient]],
  ['Design Helpers',[
   {...gradient,name:'CSS Gradient Generator'},
-  entry('Box Shadow Generator','Preview a box shadow and copy its CSS.',[n('x','Horizontal offset',{value:4}),n('y','Vertical offset',{value:8}),n('blur','Blur',{value:20}),n('spread','Spread',{value:0}),colour('colour','Shadow colour','#6041a0')],({x,y,blur,spread,colour})=>{
+  entry('Box Shadow Generator','Preview a box shadow and copy its CSS.',[n('x','Horizontal offset',{value:4}),n('y','Vertical offset',{value:8}),n('blur','Blur',{value:20}),n('spread','Spread',{value:0}),colour('colour','Shadow colour','#235b50')],({x,y,blur,spread,colour})=>{
     requireValue(blur>=0,'Blur cannot be negative.');
     const boxShadow=[x,y,blur,spread].map(value=>value+'px').join(' ')+' '+colour;
     return {text:'box-shadow: '+boxShadow+';',style:{boxShadow}};

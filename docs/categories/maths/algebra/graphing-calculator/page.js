@@ -43,6 +43,10 @@ export function plotArea(width, height) {
 export function draw(canvas, evaluate, [xMin, xMax, yMin, yMax], points) {
   const { width, height } = canvas.getBoundingClientRect();
   if (!width || !height) return false;
+  const palette = getComputedStyle(canvas);
+  const accent = palette.getPropertyValue('--catalogue-accent').trim() || palette.getPropertyValue('--brand').trim();
+  const grid = palette.getPropertyValue('--line').trim();
+  const labels = palette.getPropertyValue('--muted').trim();
   const scale = window.devicePixelRatio || 1;
   canvas.width = Math.round(width * scale);
   canvas.height = Math.round(height * scale);
@@ -59,30 +63,30 @@ export function draw(canvas, evaluate, [xMin, xMax, yMin, yMax], points) {
     ctx.stroke();
   }
   if (points) {
-    for (let x = xMin; x <= xMax; x++) line(px(x), top, px(x), bottom, '#f1edf6');
-    for (let y = yMin; y <= yMax; y++) line(left, py(y), right, py(y), '#f1edf6');
+    for (let x = xMin; x <= xMax; x++) line(px(x), top, px(x), bottom, '#eef0e8');
+    for (let y = yMin; y <= yMax; y++) line(left, py(y), right, py(y), '#eef0e8');
   }
   ctx.font = '11px system-ui';
-  ctx.fillStyle = '#625972';
+  ctx.fillStyle = labels;
   for (const x of ticks(xMin, xMax)) {
-    line(px(x), top, px(x), bottom, '#e7e1ef');
+    line(px(x), top, px(x), bottom, grid);
     ctx.textAlign = 'center';
     ctx.fillText(Number(x.toPrecision(4)), px(x), bottom + 15, 46);
   }
   for (const y of ticks(yMin, yMax)) {
-    line(left, py(y), right, py(y), '#e7e1ef');
+    line(left, py(y), right, py(y), grid);
     ctx.textAlign = 'right';
     ctx.fillText(Number(y.toPrecision(4)), left - 6, py(y) + 4, 48);
   }
-  if (xMin <= 0 && xMax >= 0) line(px(0), top, px(0), bottom, '#837692');
-  if (yMin <= 0 && yMax >= 0) line(left, py(0), right, py(0), '#837692');
+  if (xMin <= 0 && xMax >= 0) line(px(0), top, px(0), bottom, '#788c81');
+  if (yMin <= 0 && yMax >= 0) line(left, py(0), right, py(0), '#788c81');
   ctx.save();
   ctx.beginPath();
   ctx.rect(left, top, right - left, bottom - top);
   ctx.clip();
   ctx.beginPath();
   ctx.lineWidth = 2;
-  ctx.strokeStyle = '#5934c8';
+  ctx.strokeStyle = accent;
   let previous;
   let visible = false;
   const samples = Math.max(1, Math.ceil((right - left) * 2));
@@ -102,7 +106,7 @@ export function draw(canvas, evaluate, [xMin, xMax, yMin, yMax], points) {
     previous = y;
   }
   ctx.stroke();
-  ctx.fillStyle = '#5934c8';
+  ctx.fillStyle = accent;
   for (const [x, y] of points ?? []) {
     ctx.beginPath();
     ctx.arc(px(x), py(y), 4, 0, 2 * Math.PI);

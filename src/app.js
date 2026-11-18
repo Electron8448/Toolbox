@@ -17,19 +17,19 @@ const toolPages = new Map([
 ]);
 
 const categoryHues = {
-  '/maths': 220,
-  '/writing': 275,
-  '/converters': 165,
-  '/calculators': 27,
-  '/date-time': 195,
-  '/colour-design': 305,
-  '/developer-tools': 242,
-  '/image-tools': 335,
-  '/text-data': 131,
-  '/education-study': 80,
-  '/random-generators': 0,
-  '/productivity': 105,
-  '/web-seo-tools': 48
+  '/maths': 195,
+  '/writing': 338,
+  '/converters': 43,
+  '/calculators': 160,
+  '/date-time': 256,
+  '/colour-design': 20,
+  '/developer-tools': 221,
+  '/image-tools': 297,
+  '/text-data': 111,
+  '/education-study': 67,
+  '/random-generators': 355,
+  '/productivity': 140,
+  '/web-seo-tools': 181
 };
 
 const palettes = new Map();

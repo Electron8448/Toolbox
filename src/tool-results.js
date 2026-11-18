@@ -68,7 +68,7 @@ function quiz(target,questions) {
   }),score);
 }
 function wheel(target,{values,winner}) {
-  const colours=['#7453c7','#478978','#9b406d','#435fa4','#ab5427'];
+  const colours=['#086456','#d69a3d','#b96547','#47748c','#819657'];
   const disk=node('div');disk.className='decision-disk';
   disk.style.background='conic-gradient('+values.map((_,index)=>colours[index%colours.length]+' '+index/values.length*100+'% '+(index+1)/values.length*100+'%').join(',')+')';
   const pin=node('span','▼');pin.className='wheel-pin';
