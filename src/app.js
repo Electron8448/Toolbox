@@ -115,7 +115,7 @@ function homePage() {
       <h1>Everything you need, <em>all in one toolbox.</em></h1>
       <p>Find a calculator, converter or writing tool in one place.</p>
       <div class="home-search">${searchForm(true)}</div>
-      <div class="actions"><a class="primary" href="${sitePath('/readme')}" data-route>Read the README</a></div>
+      <div class="actions"><a class="secondary readme-link" href="${sitePath('/readme')}" data-route>Read the README ${arrow}</a></div>
     </div>
     <div class="hero-art" aria-hidden="true">
       <div class="art-grid"></div>
@@ -124,12 +124,14 @@ function homePage() {
       <div class="hero-brand">${toolboxMark}</div>
     </div>
   </section>
-  <section class="home-collection"><h2>Browse categories</h2><div class="discovery-grid">${categories.map(discoveryCard).join('')}</div></section>
+  <section class="home-collection category-directory"><h2>Browse categories</h2><div class="discovery-grid">${categories.map(discoveryCard).join('')}</div></section>
   ${showTools('Popular tools',popular)}
   ${showTools('Recently used',recentPaths())}
   <section class="workspace panel" aria-labelledby="workspace-title">
-    <h2 id="workspace-title">Toolbox workspace</h2>
-    <p>Have an idea for a tool we should add? Submit it as a bug report on GitHub.</p>
+    <div>
+      <h2 id="workspace-title">Toolbox workspace</h2>
+      <p>Have an idea for a tool we should add? Submit it as a bug report on GitHub.</p>
+    </div>
     <div class="actions">
       <a class="secondary" href="https://github.com/Electron8448/Toolbox">View workspace ↗</a>
       <a class="secondary" href="https://github.com/Electron8448/Toolbox/issues/new?title=Tool%20suggestion%3A%20">Submit a bug report ↗</a>
@@ -147,14 +149,18 @@ function categoryPage(category) {
     <header class="page-heading">${badge(category)}<h1>${category.name}</h1><p>${category.description}</p></header>
     ${groups.filter(group => group.category === category).map(group => `<section class="tool-group">
       <h2><a href="${sitePath(group.path)}" style="${paletteStyle(group.path)}" data-route>${group.name}</a></h2>
-      ${tools.filter(tool => tool.group === group).map(toolCard).join('')}
+      ${groupCards(group)}
     </section>`).join('')}`;
+}
+
+function groupCards(group) {
+  return `<div class="directory-grid">${tools.filter(tool => tool.group === group).map(toolCard).join('')}</div>`;
 }
 
 function groupPage(group) {
   return `${breadcrumbs(group.category, group.name)}
     <header class="page-heading">${badge(group.category)}<h1>${group.name}</h1></header>
-    <section class="tool-group" aria-label="Tools">${tools.filter(tool => tool.group === group).map(toolCard).join('')}</section>`;
+    <section class="tool-group" aria-label="Tools">${groupCards(group)}</section>`;
 }
 
 function searchPage() {
