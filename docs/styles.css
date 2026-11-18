@@ -213,16 +213,16 @@ h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 800; }
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow);
 }
 .tool-card { transition: transform .2s, border-color .2s, box-shadow .2s; }
-.tool-card:hover { transform: translateY(-3px); border-color: #cab8ec; box-shadow: 0 14px 30px #2e175b14; }
+.tool-card:hover { transform: translateY(-3px); border-color: var(--catalogue-border, #cab8ec); box-shadow: 0 14px 30px #2e175b14; }
 .category-icon, .tool-icon { display: inline-grid; place-items: center; width: 48px; height: 48px; border-radius: 13px; font-size: 27px; font-weight: 750; line-height: 1; }
-.maths, .tool-icon { background: #efe8ff; color: #5934c8; }
-.writing { background: #e1f6ee; color: #176553; font-size: 21px; }
-.arrow { color: var(--brand); font-size: 22px; display: inline-block; transition: transform .2s; }
+.maths, .writing, .tool-icon { background: var(--catalogue-tint, #efe8ff); color: var(--catalogue-accent, var(--brand)); }
+.writing { font-size: 21px; }
+.arrow { color: var(--catalogue-accent, var(--brand)); font-size: 22px; display: inline-block; transition: transform .2s; }
 a:hover .arrow { transform: translate(2px, -2px); }
 .empty p, .result p { color: var(--muted); margin-top: 7px; line-height: 1.5; }
 .inner { max-width: 950px; }
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: .92rem; margin-bottom: 32px; }
-.breadcrumbs a { color: var(--brand-dark); }
+.breadcrumbs a, .breadcrumbs [aria-current="page"] { color: var(--catalogue-accent, var(--brand-dark)); }
 .breadcrumbs a:hover { text-decoration: underline; }
 .page-heading { margin-bottom: 26px; }
 .page-heading .category-icon { margin-bottom: 13px; }
@@ -230,7 +230,7 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .tool-group h2 { margin-bottom: 14px; }
 .tool-card { display: grid; grid-template-columns: auto minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 16px 20px; max-width: 590px; }
 .tool-card strong { font-size: 1.06rem; }
-.tool-card small { display: block; color: var(--muted); margin-top: 4px; }
+.tool-card small { display: block; color: var(--catalogue-accent, var(--muted)); margin-top: 4px; }
 .empty { text-align: center; padding: 40px 20px; }
 .empty h2 { margin-top: 15px; }
 .search-results { margin-top: 17px; max-width: 590px; display: grid; gap: 10px; }
@@ -318,7 +318,8 @@ a:hover .arrow { transform: translate(2px, -2px); }
 .maker-values[hidden] { display: none; }
 
 .tool-group .tool-card + .tool-card { margin-top: 8px; }
-.tool-group h2 a:hover { color: var(--brand); text-decoration: underline; }
+.tool-group h2 a { color: var(--catalogue-accent, var(--brand-dark)); }
+.tool-group h2 a:hover { text-decoration: underline; }
 .standard-tool textarea, .standard-tool select {
   display: block; width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid #ded4ee;
   border-radius: 10px; background: white; color: inherit; font: inherit;
@@ -339,7 +340,16 @@ a:hover .arrow { transform: translate(2px, -2px); }
 #nav-categories { display: grid; gap: 3px; }
 #nav-categories details { min-width: 0; }
 #nav-categories summary { cursor: pointer; border-radius: 10px; padding: 10px 14px; font-weight: 700; }
-#nav-categories summary:hover, #nav-categories details[open] summary { background: #f1eaff; color: var(--brand-dark); }
+#nav-categories summary, #nav-categories details a { color: var(--catalogue-accent, var(--brand-dark)); }
+#nav-categories summary:hover, #nav-categories details[open] summary,
+#nav-categories a:hover, #nav-categories a[aria-current] {
+  background: var(--catalogue-tint, #f1eaff); color: var(--catalogue-accent, var(--brand-dark));
+}
+#nav-categories a[aria-current] { box-shadow: inset 3px 0 var(--catalogue-accent, var(--brand-dark)); }
+#nav-categories details a::before {
+  content: ""; display: inline-block; width: .5em; height: .5em;
+  margin-inline-end: .55em; vertical-align: .12em; border-radius: 50%; background: currentColor;
+}
 #nav-categories details a { display: block; margin: 3px 0 0 14px; padding: 8px 12px; font-size: .92rem; }
 .home-search { margin-top: 20px; max-width: 440px; }
 .home-collection { margin-top: 26px; }

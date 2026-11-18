@@ -12,12 +12,12 @@ Playwright starts its own Toolbox server on port 3195. Use `npm test -- --projec
 
 To use a Toolbox server you already started on port 3195, set `PLAYWRIGHT_REUSE_SERVER=1` before running the tests.
 
-## Acceptance tests for the category colours and editor folder controls
+## Acceptance tests for the editor folder controls
 
 These opt-in tests describe features that are still pending in this checkout. Once the implementation is ready, run them in PowerShell:
 
 ```powershell
 $env:TOOLBOX_NEW_FEATURES = '1'
-npx playwright test playwright/category-colours.spec.js playwright/editor-folder-management.spec.js
+npx playwright test playwright/editor-folder-management.spec.js
 Remove-Item Env:TOOLBOX_NEW_FEATURES
 ```

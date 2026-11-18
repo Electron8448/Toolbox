@@ -16,15 +16,53 @@ const toolPages = new Map([
   [beginnerGraphMaker.path, { page: makerPage, bind: bindMaker }]
 ]);
 
+const categoryHues = {
+  '/maths': 220,
+  '/writing': 275,
+  '/converters': 165,
+  '/calculators': 27,
+  '/date-time': 195,
+  '/colour-design': 305,
+  '/developer-tools': 242,
+  '/image-tools': 335,
+  '/text-data': 131,
+  '/education-study': 80,
+  '/random-generators': 0,
+  '/productivity': 105,
+  '/web-seo-tools': 48
+};
+
+const palettes = new Map();
+for (const category of categories) {
+  const hue = categoryHues[category.path];
+  if (hue === undefined) continue;
+  palettes.set(category.path, { hue, ink: 29, tint: 96 });
+  const siblings = groups.filter(group => group.category === category);
+  for (const [index, group] of siblings.entries()) {
+    palettes.set(group.path, {
+      hue,
+      ink: 17 + 11 * index / Math.max(1, siblings.length - 1),
+      tint: 97 - 5 * index / Math.max(1, siblings.length - 1)
+    });
+  }
+}
+
+function paletteStyle(path) {
+  const palette = palettes.get(path);
+  if (!palette) return '';
+  const { hue, ink, tint } = palette;
+  return `--catalogue-accent:hsl(${hue} 58% ${ink}%);--catalogue-tint:hsl(${hue} 66% ${tint}%);--catalogue-border:hsl(${hue} 41% 78%);`;
+}
+
 const main = document.querySelector('main');
 const sidebar = document.querySelector('#sidebar');
 const menu = document.querySelector('#menu');
 const toolboxMark = document.querySelector('.toolbox-mark').outerHTML;
 document.querySelector('#nav-categories').innerHTML = categories.map(category => `
-  <details data-category="${category.path}">
+  <details data-category="${category.path}" style="${paletteStyle(category.path)}">
     <summary>${category.name}</summary>
     <a href="${sitePath(category.path)}" data-route>All ${category.name}</a>
-    ${groups.filter(group=>group.category===category).map(group=>`<a href="${sitePath(group.path)}" data-route>${group.name}</a>`).join('')}
+    ${groups.filter(group=>group.category===category).map(group=>`<a href="${sitePath(group.path)}" style="${paletteStyle(group.path)}" data-route>${group.name}</a>`).join('')}
   </details>`).join('');
 const arrow = '<span class="arrow" aria-hidden="true">↗</span>';
 
@@ -45,20 +83,20 @@ function breadcrumbs(...items) {
   return `<nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${sitePath('/')}" data-route>Home</a>
     ${items.map(item => `<span aria-hidden="true">/</span>${typeof item === 'string'
       ? `<span aria-current="page">${item}</span>`
-      : `<a href="${sitePath(item.path)}" data-route>${item.name}</a>`}`).join('')}</nav>`;
+      : `<a href="${sitePath(item.path)}" style="${paletteStyle(item.path)}" data-route>${item.name}</a>`}`).join('')}</nav>`;
 }
 
 function toolCard(tool) {
-  return `<a class="tool-card" href="${sitePath(tool.path)}" data-route>
+  return `<a class="tool-card" href="${sitePath(tool.path)}" style="${paletteStyle(tool.group.path)}" data-route>
     <span class="tool-icon" aria-hidden="true"><b>${tool.icon ?? tool.category.icon}</b></span>
-    <span><strong>${tool.name}</strong><small>${tool.category.name} · ${tool.group.name}</small></span>${arrow}
+    <span><strong>${tool.name}</strong><small style="${paletteStyle(tool.category.path)}">${tool.category.name} · ${tool.group.name}</small></span>${arrow}
   </a>`;
 }
 
 function discoveryCard(item) {
   const category=item.category??item;
-  return `<a class="tool-card" data-route href="${sitePath(item.path)}">${badge(category)}
-    <span><strong>${item.name}</strong><small>${item.category?category.name:item.description}</small></span>${arrow}</a>`;
+  return `<a class="tool-card" data-route href="${sitePath(item.path)}" style="${paletteStyle(item.path)}">${badge(category)}
+    <span><strong>${item.name}</strong><small${item.category ? ` style="${paletteStyle(category.path)}"` : ''}>${item.category?category.name:item.description}</small></span>${arrow}</a>`;
 }
 
 const popular = ['/maths/fractions/fraction-simplifier','/writing/text-tools/word-counter','/developer-tools/json/json-formatter','/web-seo-tools/website/qr-code-generator'];
@@ -108,7 +146,7 @@ function categoryPage(category) {
   return `${breadcrumbs(category.name)}
     <header class="page-heading">${badge(category)}<h1>${category.name}</h1><p>${category.description}</p></header>
     ${groups.filter(group => group.category === category).map(group => `<section class="tool-group">
-      <h2><a href="${sitePath(group.path)}" data-route>${group.name}</a></h2>
+      <h2><a href="${sitePath(group.path)}" style="${paletteStyle(group.path)}" data-route>${group.name}</a></h2>
       ${tools.filter(tool => tool.group === group).map(toolCard).join('')}
     </section>`).join('')}`;
 }
@@ -163,6 +201,7 @@ function render() {
   const tool = tools.find(item => item.path === path);
   const toolPage = toolPages.get(path) ?? (tool?.editor ? { page: editorPage, bind: bindEditor } : tool?.run ? { page: standardPage, bind: bindStandard } : null);
   main.className = path === '/' ? 'shell home' : 'shell inner';
+  main.style.cssText = paletteStyle(tool?.group.path ?? group?.path ?? category?.path);
   main.innerHTML = category ? categoryPage(category) : toolPage ? toolPage.page(tool, breadcrumbs)
     : group ? groupPage(group) : path === '/readme' ? readmePage(breadcrumbs) : path === '/search' ? searchPage() : homePage();
   document.title = path === '/readme' ? 'README | Toolbox' : path === '/' ? 'Toolbox' : `${category?.name ?? group?.name ?? tool?.name ?? 'Search'} | Toolbox`;

@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { categories, groups, tools } from '../src/categories/index.js';
 
-test.skip(process.env.TOOLBOX_NEW_FEATURES !== '1', 'Enable the acceptance tests with TOOLBOX_NEW_FEATURES=1.');
-
 const card = (page, path) => page.locator(`main a.tool-card[href="${path}"]`);
 const badge = page => page.locator('main .page-heading .category-icon');
 const ink = locator => locator.evaluate(node => getComputedStyle(node).color);
@@ -19,6 +17,7 @@ test('every category has a separate accent and every sibling subcategory has a s
     expect(new Set(shades).size, category.name).toBe(siblings.length);
     const parentHue = hue(await ink(badge(page)));
     for (const [index, shade] of shades.entries()) {
+      expect(contrast(shade, 'rgb(255, 255, 255)'), siblings[index].name).toBeGreaterThanOrEqual(4.5);
       const distance = Math.abs(hue(shade) - parentHue);
       expect(Math.min(distance, 360 - distance), siblings[index].name).toBeLessThanOrEqual(35);
     }
@@ -44,6 +43,11 @@ function luminance(colour) {
   const channels = rgb(colour).map(value => value / 255)
     .map(value => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
   return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+}
+
+function contrast(foreground, background) {
+  const levels = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+  return (levels[0] + 0.05) / (levels[1] + 0.05);
 }
 
 test('category accents follow navigation, search, breadcrumbs and tool page indicators', async ({ page }) => {
@@ -88,8 +92,7 @@ test('category badges keep icon contrast and the directory fits on mobile', asyn
   );
   expect(colours).toHaveLength(categories.length);
   for (const [foreground, background] of colours) {
-    const levels = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
-    expect((levels[0] + 0.05) / (levels[1] + 0.05)).toBeGreaterThanOrEqual(3);
+    expect(contrast(foreground, background)).toBeGreaterThanOrEqual(4.5);
   }
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await card(page, '/maths').click();
